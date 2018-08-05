@@ -18,31 +18,23 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-});
-
 // timestamp endpoint with value
 app.get("/api/timestamp/:date_string", function (req, res) {
   let date;
   if (Date.parse(req.params.date_string)) {
-      date = new Date(req.params.date_string);
-      res.json({"unix": date.getTime(), "utc" : date.toUTCString() });
-  } else if (typeof req.params.date_string == "number") {
+    date = new Date(req.params.date_string);
+    res.json({"unix": date.getTime(), "utc" : date.toUTCString() });
+  } else if (!isNaN(req.params.date_string)) {
     date = new Date(parseInt(req.params.date_string));
     res.json({"unix": date.getTime(), "utc" : date.toUTCString() });
-  } 
-  else {
+  } else {
       res.json({"error" : "Invalid Date" });
   }
 });
 
 // timestamp endpoint with empty string
 app.get("/api/timestamp", function (req, res) {
-  let date;
-  date = new Date();
+  let date = new Date();
   res.json({"unix": date.getTime(), "utc" : date.toUTCString() });
 });
 
