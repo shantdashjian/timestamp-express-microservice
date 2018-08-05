@@ -24,19 +24,27 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-// timestamp endpoint
+// timestamp endpoint with value
 app.get("/api/timestamp/:date_string", function (req, res) {
   let date;
-  console.log(req.params.date_string);
-  if (!req.params.date_string) {
-    date = new Date();
-  } else {
-    date = new Date(req.params.date_string);
+  if (Date.parse(req.params.date_string)) {
+      date = new Date(req.params.date_string);
+      res.json({"unix": date.getTime(), "utc" : date.toUTCString() });
+  } else if (typeof req.params.date_string == "number") {
+    date = new Date(parseInt(req.params.date_string));
+    res.json({"unix": date.getTime(), "utc" : date.toUTCString() });
+  } 
+  else {
+      res.json({"error" : "Invalid Date" });
   }
-  
-  res.json({"unix": date.getTime(), "utc" : date.toUTCString() });
 });
 
+// timestamp endpoint with empty string
+app.get("/api/timestamp", function (req, res) {
+  let date;
+  date = new Date();
+  res.json({"unix": date.getTime(), "utc" : date.toUTCString() });
+});
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
